@@ -1,0 +1,5 @@
+<table>
+{% for entry in content %}
+   <tr>   <td><a id="tosearch" href="#" onclick="SEARCH('{{ entry[0] }}');">{{ entry[0] }}</a></td> <td class="right">{{ entry[1] }} </td><td>{{ entry[2] }}</td></tr>
+{% endfor %}
+</table>

@@ -1,0 +1,257 @@
+{% extends "basis.html" %}
+
+
+
+
+{% block content %}
+<style>
+<--#selectable .ui-selected, #selectabler .ui-selected { text-decoration: line-through; background: #def;}/-->
+#selectable, #selectabler {height: 100%; overflow-y: auto; overflow-x: hidden;}
+  
+#selectable  ul, #selectabler ul { width: 300px; list-style: none; margin: 0; padding: 0; }
+#selectable li, #selectabler li { background: white; position:relative;margin: 1em 0; padding: 1em; border: 2px solid gray; list-style: none; padding-left: 3.2em; overflow: hidden;}
+
+#content {margin-right: 12em; margin-left: 12em;}
+#selectable li .handle, #selectabler li .handle { background: #f8f8f8; position: absolute; left: 0; top: 0; bottom: 0; padding:0; }
+#selectable .ui-selecting, #selectabler .ui-selecting { background: #eee; }
+#selectable .ui-selecting .handle, #selectabler .ui-selecting .handle { background: #ddd; }
+#selectable .ui-selected .handle, #selectabler .ui-selected .handle { background: #cde; }
+.ui-icon-carat-2-n-s {margin-top: 10px;}
+.ui-state-highlight { height: 1.5em; line-height: 1.2em; }	    
+</style>
+<script>
+$(function() {
+	//$("#selectable").bind("mousedown", function(e) {
+        //                e.metaKey = true;
+        //            }).selectable;
+	//$("#selectable").selectable();
+
+
+    	//$("#selectabler").bind("mousedown", function(e) {
+        //                e.metaKey = true;
+        //            }).selectable;
+	//$("#selectabler").selectable();
+    $( "#selectable" )
+	.bind("mousedown", function(e) { e.metaKey = true;})
+	.sortable({ handle: ".handle", placeholder: "ui-state-highlight", forcePlaceholderSize: true, scroll: false})
+	.selectable({ filter: "li", cancel: ".handle", stop: SEARCH })
+	.find( "li" )
+	    .addClass( "ui-corner-all" )
+	    .prepend( "<div class='handle'><span class='ui-icon ui-icon-carat-2-n-s'></span></div>" );
+    
+    $( "#selectabler" )
+	.bind("mousedown", function(e) { e.metaKey = true;})
+	.sortable({ handle: ".handle", placeholder: "ui-state-highlight", forcePlaceholderSize: true, scroll: false})
+	.selectable({ filter: "li", cancel: ".handle", stop: SEARCH })
+	.find( "li" )
+	    .addClass( "ui-corner-all" )
+	    .prepend( "<div class='handle'><span class='ui-icon ui-icon-carat-2-n-s'></span></div>" );
+
+    $( "#selectable, #selectabler" ).sortable({
+      connectWith: ".connectedSortable"
+    });
+
+
+	
+
+
+
+
+    $( "#tabs" ).tabs({
+	active: 0
+	});
+    $( document ).tooltip();
+});
+
+
+
+
+$(function() {
+	BOOKMARKSTS();
+	
+	$('input[name="search"]').keypress(function (e) {
+		if (e.which == 13) {
+		SEARCH();
+		return false;
+			}
+		});
+		
+	$('input[name="csearch"]').keypress(function (e) {
+		if (e.which == 13) {
+		CONCORDANCE();
+		return false; 
+			}
+		});	
+		
+    $('#submitb').click( function(){
+		SEARCH() 
+		});
+    $('#generate').click( function(){
+		CONCORDANCE() 
+		});
+	$('#genwl').click( function(){
+		GENWL() 
+		});
+	$("#completew").change( function(){
+		SEARCH()
+		});
+    $("#check1").change(GENWL);
+    $("#ngram").change(GENWL);
+    $("#mxerror").change(GENWL);
+    $("#trh").change(GENWL);
+    $("#translator").change(GENWL);
+});
+
+
+function SEARCH() {
+	$("#result").text("Searching...");
+	/*sterm = typeof sterm !== 'undefined' ?  sterm : $('input[name="search"]').val();
+	$('input[name="search"]').val(sterm);*/
+    $( "#tabs" ).tabs({ active: 0 });	
+      
+    data = {};
+	data.texts = {};
+	data.texts.left = {};
+	data.texts.right = {};
+	data.texts.left = $( ".ui-selected", "#selectable" ).text();
+	data.texts.right = $( ".ui-selected", "#selectabler" ).text();
+
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_comparetexts',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#result").text(data.result);
+		}
+	});
+  }
+      
+function GENWL() {
+	$("#wordlist").text("Generating wordlist...");
+	data = {};
+	data.settings = {};
+	data.indices = {};
+	$( ".ui-selected", "#selectable" ).each(function() {
+		var index = $( "#selectable li" ).index( this );
+		data.indices[index] = true;
+		});
+	data.settings["translator"] = $('select[id="translator"]').val();
+	data.settings["cull"] = $('input[id="check1"]').is(':checked');
+	data.settings["ngram"] = $('input[id="ngram"]').val();
+	data.settings["trh"] = $('input[id="trh"]').val();
+	data.settings["mxerror"] = $('input[id="mxerror"]').val();
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_genwl',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#wordlist").html(data.result);
+		}
+	});
+  }
+
+function CONCORDANCE(sterm, text) {
+	$("#concordance").text("Creating concordance...");
+	sterm = typeof sterm !== 'undefined' ?  sterm : $('input[name="csearch"]').val();
+	text = typeof text !== 'undefined' ?  text : $('select[id="text"]').val();
+	$('input[name="csearch"]').val(sterm);
+	$('select[id="text"]').val(text)
+    $( "#tabs" ).tabs({ active: 2 });	
+	data = {};
+	data.settings = {};
+	data.settings["sterm"] = sterm;
+	data.settings["text"] = text;
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_concordance',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#concordance").html(data.result);
+		}
+	});
+  }
+</script>
+
+<style>
+	#respos {color: red;}
+</style>
+<h2>Textsearch</h2>
+				
+	<span id="svgimage"> </span>
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+				
+				
+<div id="tabs">
+<ul>
+<li><a href="#tabs-1">Basic</a></li>
+<li><a href="#tabs-2">Typical Words</a></li>
+<li><a href="#tabs-3">Concordance</a></li>
+</ul>
+
+<div id="tabs-1">
+<p><span id="result"></span></p>
+
+</div>
+
+<div id="tabs-2">
+
+</div>
+<div id="tabs-3">
+
+</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block browsing %}
+
+<div id="searchmask">
+			    <div id="bookmarks">
+				<select type="hidden" id="bookm">
+				    <option value="1">keine</option>
+				    <option value="2">dazwischen</option>
+				    <option value="3">alle</option>
+				</select>
+				<input name="bookname" id="bookname" type="hidden" size="10" />
+				<input type="hidden" id="addbtn" value="+"/>
+			    </div>
+
+				<!--SEARCHMASK END-->
+		    </div>
+
+				<div id="lemlist" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ul id="selectable" class="connectedSortable">
+					{% for entry in content %}
+						<li class="ui-widget-content" title="{{ entry[1] }}"> {{ entry[0] }} </li>
+					{% endfor %}
+				</ul>
+				
+   					<!--TEXTLIST END-->
+				</div>
+				
+				
+				<div id="lemlistr" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ul id="selectabler" class="connectedSortable">
+					
+					
+				</ul>
+				
+   					<!--TEXTLIST END-->
+				</div>
+{% endblock %}

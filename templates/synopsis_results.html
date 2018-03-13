@@ -1,0 +1,22 @@
+<table>
+ <colgroup>
+     <col width=50%>
+     <col width=50%>
+</colgroup>
+{% for entry in head %}
+    <tr>
+        <th>{{ entry[0] }}</th>
+        <th>{{ entry[2] }}</th>
+    </tr>
+{% endfor %}
+{% for entry in content %}
+    <tr>
+    {% if entry[1] %}
+        <td colspan="2" align="center">{{ entry[1] }}</td>
+    {% else %}
+        <td align="right">{{ entry[0] }}</td>
+        <td align="left" >{{ entry[2] }}</td>
+    {% endif %}
+    </tr>
+{% endfor %}
+</table>

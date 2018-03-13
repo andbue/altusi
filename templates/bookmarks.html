@@ -1,0 +1,10 @@
+
+            <select id="bookm">
+				<option value="none">none</option>
+                {% for entry in content %}
+                <option value="{{ entry }}">{{ entry }}</option>
+                {% endfor %}
+                <option value="all">all</option>
+            </select>
+            <input name="bookname" id="bookname" type="text" size="10" />
+            <input type="submit" id="addbtn" value="+" />

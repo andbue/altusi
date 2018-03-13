@@ -1,0 +1,12 @@
+<button onclick="copyToClipboard()">Copy to Clipboard</button>
+<textarea id="csvarea" style="width: 1px; height: 1px;">{{ csvtable }}</textarea>
+<table>
+{% for entry in content %}
+    <tr>
+    {% if entry[4] %}<td rowspan="{{ entry[4] }}">{{ entry[0] }}</td>
+    {% endif %}
+    <td{% if entry[2] %} id='respos' 
+    {% endif %}><a id="toconc" href="#" onclick="CONCORDANCE('{{ sterm }}', '{{ entry[3] }}');">{{ entry[1] }}</a></td> <td {% if entry[2] %} id='respos' 
+    {% endif %} class="right">{{ entry[2] }} </td></tr>
+{% endfor %}
+</table>

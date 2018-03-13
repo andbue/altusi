@@ -1,0 +1,259 @@
+﻿/* ARABIC AND LATIN GLOSSARY WEBSITE STYLESHEET */
+
+/* BUILDING BLOCKS - BASIC PAGE LAYOUT */
+body {
+	margin: 0;
+	padding: 0;
+}
+#content {
+	margin: 0 0.714em 19.714em 19.714em; /*10px/14px, 19em+10px/14px */
+}
+#content > div { /*#header, #linkbar, #center & #footer*/
+	margin-left:auto;
+	margin-right:auto; /*centering*/
+	max-width: 65em; /*910px/14px*/
+	padding-right: 0.357em; /*5px/14px*/
+	padding-left: 0.357em; /*gesamtbreite 920px/14px=65.715em*/
+}
+#header {
+	/*borders*/
+}
+#linkbar {
+	/*borders*/
+	padding: 0.143em 0; /*content padding*/
+}
+#center {
+	position: relative; /*for gloss/pr positioning*/
+	padding-top: 0.857em; /*12px/14px + 32px/14px rest, 8px lines & paddings*/
+	padding-bottom: 2.286em; /*content padding*/
+	margin-top: 0.143em;
+	margin-bottom: 0.143em; /*2px double-line margin*/
+	/*borders*/
+}
+#footer {
+	/*borders*/
+	padding: 0.143em 0; /*2px content padding*/
+}
+#searchmask {
+	position:fixed;
+	left:0px;
+	top:0px;
+	width:18.643em; /*261px/14px; complete: 266px/14px=19*/
+	height: 10em;
+	overflow:hidden;
+	padding: 0.357em 0 0 0.357em; /*5px/14px*/
+	
+}
+#alphlist {
+	position:fixed;
+	left:0px;
+	top:10.357em; /*168px/14px*/
+	bottom:0px;
+	width:5em; /*60px->70px/14px=5em*/
+	overflow: auto;
+}
+#lemlist {
+	position:fixed;
+	left:0em;
+	top:10.357em;
+	bottom:0px;
+	width:19em;
+	overflow: auto;
+}
+
+#lemlistr {
+	position:fixed;
+	right:0em;
+	top:10.357em;
+	bottom:0px;
+	width:19em;
+	overflow: visible;
+}
+
+#selectable, #selectabler {height: 100%;}
+
+/*general layout borders*/
+#header, #linkbar, #center, #footer  {
+	border-top: 0.143em solid #15305f; /*2px/14px*/
+}
+#linkbar, #center, #footer {
+	border-bottom: 0.143em solid #15305f;
+}
+
+
+
+table, th, td {
+	border: 1px solid;
+}
+
+/* FONTS */
+html {
+	font-size: 100%; /*16px*/
+}
+body {
+	font-family: "Arial unicode MS", "Arial Unicode", "Helvetica", "Arial", "sans serif";
+	font-weight: normal;
+}
+h1, h2, blockquote {
+	font-family: Georgia, 'Times New Roman', serif
+}
+h1, h2, h3 {
+	font-weight: bold
+}
+blockquote {
+	font-style: italic;
+}
+
+/* TEXTFLOW, MARGINS & PADDING */
+/*general*/
+body {
+	font-size: 0.875em; /*14px/16px*/
+	line-height: 1.429em; /*20px/14px - BASIC LEADING: 20px*/
+}
+#header, #linkbar, #footer {
+	text-align: center;
+}
+h1 {
+	font-size: 2.571em; /*36px/14px*/
+	line-height: 1.111em; /*38px/36px = 2x20 w/ 2px line on top*/
+	letter-spacing:0.028em; /*1px/36px*/
+	padding: 0;
+	margin:0;
+}
+h2 {
+	font-size: 1.143em; /*16px/14px*/
+	line-height: 1.25em; /*20px/16px*/
+	padding: 0;
+	margin: 2.5em 0 1.25em 0;
+}
+h3 {
+	font-size: 1em; /*14px/14px*/
+	line-height: 1.429em; /*20px/14px*/
+	padding: 0 1em;
+	margin: 2.143em 0 0.714em 0; /*30px/14px, 10px/14px*/
+}
+p {
+	text-align: justify;
+	text-indent: 0;
+	margin: 0
+}
+p + p {
+	text-indent: 1.5em;
+}
+a {
+	text-decoration:none;
+	font-variant: small-caps;
+}
+a:hover {
+	text-decoration: underline;
+}
+blockquote {
+	margin: 1.429em 0 1.429em 3em;
+}
+blockquote em {
+	font-style: normal;
+}
+ul {
+	display: block;
+	list-style-type: disc;
+	padding: 0;
+	margin: 1.429em 0 1.429em 1.5em;
+}
+ul.plain {
+	list-style-type: none;
+}
+
+/*specific*/
+#linkbar ul {
+	display: block;
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+#linkbar li {
+	display: inline;
+}
+#linkbar li + li:before {
+	content: " • "
+}
+ul.typepad {
+	font-size: 1.167em;
+	clear: both;
+	list-style-type:none;
+	margin:0;
+	padding:0.143em 0 0;
+}
+ul.typepad li {
+	float: left;
+	width: 1.5em;
+	height: 1.5em;
+	line-height: 1.5em;
+	text-align: center;
+}
+ul.typepad li + li {
+	margin-left: 0.143em;
+}
+ul.typepad li a {
+	display: block;
+	height: inherit;
+	font-variant: normal;
+}
+#searchmask div {
+	font-size: 0.857em; /*12px/14px*/
+	line-height: 1.125em;
+	padding-top: 0.333em;
+	clear:both;
+}
+#alphlist ul, #lemlist ul, #lemlistr ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+}
+#alphlist li {
+	margin-top: 0.188em;
+	margin-right: 0.188em; /*3px/16px*/
+	font-size: 1.143em; /*16px/14px*/
+	line-height: 1.063em; /*17px/16px*/
+	text-align: center;
+}
+#lemlist li, #lemlistr li {
+	margin-top: 0.214em; /*3px/14px*/
+	line-height: 1.214em; /*17px/14px;*/
+	padding-left: 0.143em; /*2px/14px*/
+	padding-right: 0.143em; /*2px/14px*/
+}
+#lemlist div, #lemlistr div {
+	padding: 0 0 0.357em 0.357em;
+	height: 100%;
+}
+/*
+#lemlist a, #alphlist a {
+	display: block; /*make clickable areas fill in ul/li box
+}*/
+
+
+/* grid */
+/*65em maxwidth = 3 x 20 w/ 2.5em margin*/
+.grid {
+	float: left;
+/*	margin-right: 2.5em;*/
+	margin-right: 3.8%;
+	margin-bottom: 1.429em;
+}
+.start {
+	clear:both;	
+}
+.end {
+	margin-right: 0 !important;	
+} 
+.one {
+/*	width: 20em;*/
+	width: 30.6%
+}
+.two {
+/*	width: 42.5em;*/	
+	width: 65.3%;
+}
+.end + * {
+	clear: both;	
+}

@@ -1,0 +1,42 @@
+﻿/* ARABIC AND LATIN GLOSSARY WEBSITE STYLESHEET */
+
+/* PRINT OUTPUT */
+/* BUILDING BLOCKS - BASIC PAGE LAYOUT */
+#searchmask, #alphlist, #lemlist, #linkbar, a.hidelink {
+	display: none;	
+}
+#content {
+	margin: 0;
+}
+#content > div {
+	margin-left: 0;
+}
+#header, #center, #footer  {
+	border-top: 0.143em solid #000000;
+	border-bottom: 0.143em solid #000000;
+}
+/* COLORS */
+body {
+	background-color: #ffffff;
+}
+body {
+	color: #000000;
+}
+h2, p.bsp:before, p.koa:before, p.kol:before {
+	color: #707070;
+}
+a {
+	color: #000000;
+}
+
+/* TEXTFLOW, MARGINS & PADDING */
+/*general*/
+body {
+	font-size: 0.688em; /*11px*/
+}
+a {
+	text-decoration:underline;
+}
+span.emph {
+	text-decoration:underline;
+}

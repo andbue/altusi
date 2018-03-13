@@ -1,0 +1,127 @@
+{% extends "basis.html" %}
+{% block content %}
+		<script>
+		//	$(function() {
+		//		$("#selectable").selectable("disable");
+		//					
+		//				});
+		$(function() {			
+			$( "[wtype]" ).click(function(){ $( this ).attr("contenteditable", "true"); } );
+			$( "[wtype]").keypress(function(e){
+				if(e.keyCode=="13"){
+					e.preventDefault();
+					innlclass = (document.getSelection().focusNode.textContent == '\n');
+					//innlclass = true;
+					if( !innlclass){
+					document.execCommand('insertHTML', false, '<span class="nl">');
+					}
+					document.execCommand('insertHTML', false, '\n');
+					if ( !innlclass ){
+						document.execCommand('insertHTML', false, '</span>');
+					}
+				}
+			});
+			$( "#saveb" ).click(function(){SAVE()});
+		});
+
+		function SAVE(){
+			data={};
+			data.edits = {};
+			data.params = {};
+			$( "[contenteditable]" ).each( function(index){ 
+				data.edits[$(this).attr("cnt")]=$( this ).text();
+			} );
+			data.params["page"] = (location.search.split('page=')[1]||'').split('&')[0];
+			data.params["textname"] = (location.search.split('textname=')[1]||'').split('&')[0];
+			data = JSON.stringify(data);
+			$.ajax({
+				url: $SCRIPT_ROOT + '/_saveedits',
+				type: 'POST',
+				contentType: 'application/json;charset=UTF-8',
+				data: data,
+				success: function() {
+					location.reload();
+				}
+			});
+		}
+		
+		</script>
+
+
+		
+		<style>
+		[wtype]{white-space: pre-line;}
+		[wtype="w"][lemma=""]:not([contenteditable="true"]){background-color: red;}
+
+		.inword:not([contenteditable="true"]){ background-color: orange; }
+		[wtype="w"]:hover{
+		  background-color: greenyellow;
+		}
+		[wtype="s"]:hover{
+		  background-color: lightgray;
+		}
+		[contenteditable="true"], [contenteditable="true"]:hover{
+		  background-color: yellow;
+		}
+		.nl{
+			white-space: pre;
+		}
+		.nl:not(:empty):before{
+			content: " ¶";
+		}
+		.nl:not(:empty):after{content:" ";}
+		#selectable .ui-widget-content{
+			background: none;
+			border: none;
+		}
+		</style>
+
+
+		<h2>Txtedit: {{ pageswitch[0] }}</h2>
+		<div id="pageswitch">
+			<a href="txtedit?textname={{ pageswitch[0] }}&page={{ pageswitch[1] }}">(prev)</a>
+			page {{ pageswitch[2] }}/{{ pageswitch[3] }}
+			<a href="txtedit?textname={{ pageswitch[0] }}&page={{ pageswitch[4] }}">(next)</a>
+
+		</div>
+		<div id="txtedit"><!--
+			{% for w in text %}
+			{% if not w[0]%2 %}
+		--><span wtype="s" cnt="{{ w[0] }}" class="{{ 'inword' if not (' ' in w[1] or '\n' in w[1] or '\t' in w[1]) }}">{{ w[1]|replace("\n", "<span class='nl'>\n</span>")|safe }}</span><!--
+			{% else %}
+		--><span wtype="w" cnt="{{ w[0] }}" lemma="{{ w[1][1] }}">{{ w[1][0] }}</span><!--
+			{% endif %}
+			{% endfor %}
+		--></div>		
+						
+						
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+{% endblock %}
+
+{% block browsing %}
+
+<div id="searchmask">
+			    <div id="bookmarks">
+			    </div>
+			    <input id="saveb" type="submit" value="Save"></input>
+				<!--SEARCHMASK END-->
+		    </div>
+
+				<div id="lemlist" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ol id="selectable">
+					{% for entry in content %}
+					<li><a class="ui-widget-content" href="txtedit?textname={{ entry[0] }}"> {{ entry[0] }} </a></li>
+					{% endfor %}
+				</ol>
+				
+   					<!--TEXTLIST END-->
+				</div>
+				
+				
+{% endblock %}

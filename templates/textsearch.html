@@ -1,0 +1,246 @@
+{% extends "basis.html" %}
+
+
+
+
+{% block content %}
+<style>
+  #selectable .ui-selected { text-decoration: line-through;}
+</style>
+
+<script>
+$(function() {
+	$("#selectable").bind("mousedown", function(e) {
+                        e.metaKey = true;
+                    }).selectable;
+	$("#selectable").selectable();
+	$( "#tabs" ).tabs({
+	active: 0
+	});
+
+     $( document ).tooltip();
+});
+
+function copyToClipboard() {
+  $("#csvarea").select();
+  document.execCommand("copy");
+}
+
+$(function() {
+	BOOKMARKSTS();
+	
+	$('input[name="search"]').keypress(function (e) {
+		if (e.which == 13) {
+		SEARCH();
+		return false;
+			}
+		});
+		
+	$('input[name="csearch"]').keypress(function (e) {
+		if (e.which == 13) {
+		CONCORDANCE();
+		return false; 
+			}
+		});	
+		
+    $('#submitb').click( function(){
+		SEARCH() 
+		});
+    $('#generate').click( function(){
+		CONCORDANCE() 
+		});
+	$('#genwl').click( function(){
+		GENWL() 
+		});
+	$("#completew").change( function(){
+		SEARCH()
+		});
+	$("#sortdate").change( function(){
+		SEARCH()
+		});
+    $("#cull").change(GENWL);
+    $("#ngram").change(GENWL);
+    $("#mxerror").change(GENWL);
+    $("#trh").change(GENWL);
+    $("#translator").change(GENWL);
+});
+
+
+function SEARCH(sterm) {
+	$("#result").text("Searching...");
+	sterm = typeof sterm !== 'undefined' ?  sterm : $('input[name="search"]').val();
+	$('input[name="search"]').val(sterm);
+    $( "#tabs" ).tabs({ active: 0 });	
+      
+    data = {};
+	data.settings = {};
+	data.indices = {};
+	$( ".ui-selected", "#selectable" ).each(function() {
+		var index = $( "#selectable li" ).index( this );
+		data.indices[index] = true;
+		});
+	data.settings["sterm"] = sterm;
+	data.settings["completew"] = ($('input[id="completew"]').is(':checked')) ? 'True' : 'False';
+	data.settings["sortdate"] = ($('input[id="sortdate"]').is(':checked')) ? 'True' : 'False';
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_searchbasic',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#result").html(data.result);
+		}
+	});
+  }
+      
+function GENWL() {
+	$("#wordlist").text("Generating wordlist...");
+	data = {};
+	data.settings = {};
+	data.indices = {};
+	$( ".ui-selected", "#selectable" ).each(function() {
+		var index = $( "#selectable li" ).index( this );
+		data.indices[index] = true;
+		});
+	data.settings["translator"] = $('select[id="translator"]').val();
+	data.settings["cull"] = $('input[id="cull"]').val();
+	data.settings["ngram"] = $('input[id="ngram"]').val();
+	data.settings["trh"] = $('input[id="trh"]').val();
+	data.settings["mxerror"] = $('input[id="mxerror"]').val();
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_genwl',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#wordlist").html(data.result);
+		}
+	});
+  }
+
+function CONCORDANCE(sterm, text) {
+	$("#concordance").text("Creating concordance...");
+	sterm = typeof sterm !== 'undefined' ?  sterm : $('input[name="csearch"]').val();
+	text = typeof text !== 'undefined' ?  text : $('select[id="text"]').val();
+	$('input[name="csearch"]').val(sterm);
+	$('select[id="text"]').val(text)
+    $( "#tabs" ).tabs({ active: 2 });	
+	data = {};
+	data.settings = {};
+	data.settings["sterm"] = sterm;
+	data.settings["text"] = text;
+	data.settings["completew"] = ($('input[id="completew"]').is(':checked')) ? 'True' : 'False';
+	data = JSON.stringify(data);
+	$.ajax({
+		url: $SCRIPT_ROOT + '/_concordance',
+		type: 'POST',
+		contentType: 'application/json;charset=UTF-8',
+		data: data,
+		success: function( data ) {
+		$("#concordance").html(data.result);
+		}
+	});
+  }
+</script>
+
+<style>
+	#respos {color: red;}
+</style>
+<h2>Textsearch</h2>
+				
+	<span id="svgimage"> </span>
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+				
+				
+<div id="tabs">
+<ul>
+<li><a href="#tabs-1">Basic</a></li>
+<li><a href="#tabs-2">Typical Words</a></li>
+<li><a href="#tabs-3">Concordance</a></li>
+</ul>
+
+<div id="tabs-1">
+	<input name="search" id="searchfield" type="text" size="25" />
+	<input id="submitb" type="submit" value="Search"/>
+CompleteWords:
+<input type="checkbox" name="completew" value="completew" id="completew">
+
+SortDate:
+<input type="checkbox" name="sortdate" value="sortdate" id="sortdate">
+
+<p><span id="result"></span></p>
+</div>
+
+<div id="tabs-2">
+Translator:
+<select id="translator">
+			{% for author in authors %}
+				<option value="{{ author }}">{{ author }}</option>
+			{% endfor %}
+</select>
+CullTransl%:
+<input name="cull" id="cull" type="text" value="0" size="3" />
+Ngram:
+<input name="ngram" id="ngram" type="text" value="1" size="2" />
+Threshold:
+<input name="trh" id="trh" type="text" value="5" size="3" />
+Max-error:
+<input name="mxerror" id="mxerror" type="text" value="2" size="3" />
+<input id="genwl" type="submit" value="Search"/>
+
+<p><span id="wordlist"></span></p></div>
+
+<div id="tabs-3">
+<input name="csearch" id="csearchfield" type="text" size="20" />
+Text:
+<select id="text">
+			{% for text in texts %}
+				<option value="{{ text }}">{{ text }}</option>
+			{% endfor %}
+</select>
+<input id="generate" type="submit" value="Search"/>
+<!-- CompleteWords: <input type="checkbox" name="completew" value="completew" id="completew"> -->
+<div class="centered"><span id="concordance"></span></div>
+</div>
+
+</div>
+
+{% endblock %}
+
+
+{% block browsing %}
+
+<div id="searchmask">
+			    <div id="bookmarks">
+				<select type="hidden" id="bookm">
+				    <option value="1">keine</option>
+				    <option value="2">dazwischen</option>
+				    <option value="3">alle</option>
+				</select>
+				<input name="bookname" id="bookname" type="hidden" size="10" />
+				<input type="hidden" id="addbtn" value="+"/>
+			    </div>
+
+				<!--SEARCHMASK END-->
+		    </div>
+
+				<div id="lemlist" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ol id="selectable">
+					{% for entry in content %}
+						<li class="ui-widget-content" title="{{ entry[1] }}"> {{ entry[0] }} </li>
+					{% endfor %}
+				</ol>
+				
+   					<!--TEXTLIST END-->
+				</div>
+				
+				
+{% endblock %}

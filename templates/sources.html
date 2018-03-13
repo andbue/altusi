@@ -1,0 +1,67 @@
+{% extends "basis.html" %}
+{% block content %}
+		<script>
+			$(function() {
+				$("#selectable").bind("mousedown", function(e) {
+					e.metaKey = true;
+				}).selectable();
+				$( "#selectable" ).selectable({
+					stop: function() {
+						$("#svgimage").text("Computing...");
+						var result = $( "#select-result" ).empty();							
+						data = {}
+						$( ".ui-selected", this ).each(function() {
+							var index = $( "#selectable li" ).index( this );
+							data[index] = true;
+							});
+						data = JSON.stringify(data);
+											
+						$.ajax({
+							url: $SCRIPT_ROOT + '/_select_texts',
+							type: 'POST',
+							contentType: 'application/json;charset=UTF-8',
+							data: data,
+							success: function( data ) {
+								$("#svgimage").html(data.svgimage);
+							}
+							});
+							
+						}
+					});
+				});
+				
+				 $(function() {
+						$( document ).tooltip();
+						});
+						
+
+		</script>
+
+		<h2>Sources</h2>
+		<div>
+		<a href="{{ url_for('sourcesdl') }}">Download full xml-file.</a>
+		<!-- 
+		<br>
+		<a href="{{ url_for('sourcesreload') }}">Reload xml-file.</a>
+		-->
+		</div>		
+					{% for entry in content %}
+						
+						
+		<div class="grid one start"> 
+			<a href="{{ url_for('textdownload') }}?textname={{ entry[0] }} ">{{ entry[0] }} </a>
+		</div>
+		<div class="grid two end"> 
+			{{ entry[1] }}: <em>{{ entry[2] }}</em> ({{ entry[3] }}) <br />
+			<b>Source: </b> {{ entry[4] }}<br />
+			<b>Length: </b> {{ entry[5] }} words<br />
+		</div>
+		<p></p>
+						
+					{% endfor %}
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+{% endblock %}

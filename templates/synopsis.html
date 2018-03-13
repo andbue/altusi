@@ -1,0 +1,48 @@
+{% extends "basis.html" %}
+{% block content %}
+<script>
+	$(function() {
+			$("#text1").change(GEN_SYNOPSIS);
+			$("#text2").change(GEN_SYNOPSIS);
+		});
+		
+	function GEN_SYNOPSIS() {
+		$("#result").text("Generating synopsis...");
+		data = {};
+		data.settings = {};
+		data.settings["text1"] = $('select[id="text1"]').val();
+		data.settings["text2"] = $('select[id="text2"]').val();
+		data = JSON.stringify(data);
+		$.ajax({
+			url: $SCRIPT_ROOT + '/_gensynopsis',
+			type: 'POST',
+			contentType: 'application/json;charset=UTF-8',
+			data: data,
+			success: function( data ) {
+			$("#result").html(data.result);
+			}
+		});
+	  }
+	  
+</script>
+
+		<h2>Synopsis</h2>
+		<div>
+		<select id="text1">
+			{% for entry in content %}
+				<option value=" {{ entry }} ">{{ entry }}</option>
+			{% endfor %}
+        </select>
+        <select id="text2">
+			{% for entry in content %}
+				<option value=" {{ entry }} ">{{ entry }}</option>
+			{% endfor %}
+        </select>
+		</div>
+		
+		<p><span id="result"></span></p>
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+{% endblock %}

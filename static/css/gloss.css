@@ -1,0 +1,121 @@
+﻿/* ARABIC AND LATIN GLOSSARY WEBSITE STYLESHEET */
+/* GLOSSARY ENTRY */
+/* FONTS */
+p.bsp:before,
+p.koa:before,
+p.kol:before {
+	font-family: Georgia, "Times New Roman", serif;
+	font-weight: bold;
+}
+span.ae,
+span.are {
+	font-weight: bold;
+}
+/* TEXTFLOW, MARGINS & PADDING */
+a.hidelink {
+	margin-left: 1.5em;
+}
+span.are {
+	direction: rtl;
+	unicode-bidi: bidi-override;
+}
+span.emph {
+	direction: inherit;
+	unicode-bidi: inherit;
+}
+/* BED */
+div.bed {
+	margin-left: 3em;
+}
+div.bed + div.bed {
+	margin-top: 1.429em;
+}
+span.pr {
+	position: absolute;
+	width: 2.5em;
+	text-align: right;
+	left: 0.357em;
+}
+/* LONG VERSION */
+div.lv {
+	display: none;
+	border-left: 0.143em solid #607090;
+	margin: 1.429em 0 1.429em 1.5em;
+	padding: 0 0.143em;
+}
+ul.beleg,
+ul.ha {
+	margin: 0;
+	padding: 0;
+	list-style-type: none;
+}
+ul.ha > li {
+	display: inline;
+}
+p.bsp,
+p.koa {
+	margin: 0;
+}
+p.kol {
+	margin-top: 1.429em;
+}
+p.bsp + p.koa {
+	text-indent: 0;
+}
+ul.beleg > li {
+	padding-left: 1em;
+	text-indent: -1em;
+}
+span.zar {
+	direction: rtl;
+	unicode-bidi: embed;
+}
+span.zar > span.kozit {
+	direction: ltr;
+	unicode-bidi: embed;
+}
+span.za {
+	display: block;
+}
+/* CONTENT ADDING */
+h2.ll:after,
+li > span.zl:before {
+	content: ": ";
+}
+li > span.zar:after {
+	content: ":";
+}
+span.za:before {
+	content: " ";
+}
+span.gram:before {
+	content: " ";
+}
+span.w:before {
+	content: " <"
+}
+span.w:after {
+	content: ">"
+}
+span.en:before,
+p.bsp > span.zl:before {
+	content: " ‒ "
+}
+ul.ha:before,
+span.qu:before {
+	content: " (";
+}
+ul.ha:after,
+span.qu:after {
+	content: ")";
+}
+ul.ha > li + li:before {
+	content: " / "
+}
+p.bsp:before {
+	content: "Example: ";
+}
+p.koa:before,
+p.kol:before {
+	content: "Commentary: ";
+}

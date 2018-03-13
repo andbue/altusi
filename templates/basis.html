@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>altusi</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/base.css') }}" media="all"/>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/colors.css') }}" media="all"/>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/jquery-ui.css') }}" media="all"/>
+						<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/print.css') }}" media="print"/>
+		<script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
+		<script src="{{ url_for('static', filename='js/jquery-ui.min.js') }}"></script>
+		
+		<script type="text/javascript">
+			var $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+			
+		function BOOKMARKS() {
+                    data = {};
+                    data.indices = {};
+                    data.settings = {};
+                    $( ".ui-selected", "#selectable" ).each(function() {
+                        var index = $( "#selectable li" ).index( this );
+                        data.indices[index] = true;
+                        });
+                    data.settings["addbm"] = $('input[id="bookname"]').val();
+                    data = JSON.stringify(data);
+                    $.ajax({
+                        url: $SCRIPT_ROOT + '/_bookmarks',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: data,
+                        success: function( data ) {
+                            $("#bookmarks").html(data.content);
+                            bmtable = data.bmtable;
+                            $( "#addbtn" ).button({
+                                    icons: { primary: "ui-icon-locked" },
+                                    text: false,
+                                });
+                            $("#addbtn").click(BOOKMARKS);
+                            $("#bookm").selectmenu({
+                                select: function( event, ui ){
+                                    $( ".ui-selectee" ).removeClass("ui-selected");
+                                    var name = ui.item.value;
+                                    switch (name) {
+                                        case "none":
+                                            break;
+                                        case "all":
+                                            $( ".ui-selectee" ).addClass("ui-selected");
+                                            break;
+                                        default:
+                                            var texts = bmtable[name];
+                                            for (var text in texts) {
+                                            $( ".ui-selectee:eq( " + texts[text] + " )" ).addClass("ui-selected");
+                                                }
+                                    }
+                                    GET_SVG();
+                                    }
+                                });
+                        }
+                        });
+                        return false;
+                    }
+			
+		function BOOKMARKSTS() {
+                    data = {};
+                    data.indices = {};
+                    data.settings = {};
+                    $( ".ui-selectee:not(.ui-selected)" ).each(function() {
+                        var index = $( "#selectable li" ).index( this );
+                        data.indices[index] = true;
+                        });
+                    data.settings["addbm"] = $('input[id="bookname"]').val();
+                    data = JSON.stringify(data);
+                    $.ajax({
+                        url: $SCRIPT_ROOT + '/_bookmarks',
+                        type: 'POST',
+                        contentType: 'application/json;charset=UTF-8',
+                        data: data,
+                        success: function( data ) {
+                            $("#bookmarks").html(data.content);
+                            bmtable = data.bmtable;
+                            $( "#addbtn" ).button({
+                                    icons: { primary: "ui-icon-locked" },
+                                    text: false,
+                                });
+                            $("#addbtn").click(BOOKMARKSTS);
+                            $("#bookm").selectmenu({
+                                select: function( event, ui ){
+                                    $( ".ui-selectee" ).addClass("ui-selected");
+                                    var name = ui.item.value;
+                                    switch (name) {
+                                        case "none":
+                                            break;
+                                        case "all":
+                                            $( ".ui-selectee" ).removeClass("ui-selected");
+                                            break;
+                                        default:
+                                            var texts = bmtable[name];
+                                            for (var text in texts) {
+                                            $( ".ui-selectee:eq( " + texts[text] + " )" ).removeClass("ui-selected");
+                                                }
+                                    }
+                                    }
+                                });
+                        }
+                        });
+                        return false;
+                    }
+			
+		</script>				
+				
+		<style>			
+			#feedback { font-size: 1.4em; }
+			#selectable li { background: #ccb4a3; color: #854200;}
+			#selectable .ui-selecting { background: #e5d9cf; color: #854200; }
+			#selectable .ui-selected { background: #deb292; color: #854200; }
+			#selectable { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+			#selectable li { margin: 3px; padding: 0.5em; font-size: 0.9em; height: 12px; }
+
+			#selectabler li { background: #ccb4a3; color: #854200;}
+			#selectabler .ui-selecting { background: #e5d9cf; color: #854200; }
+			#selectabler .ui-selected { background: #deb292; color: #854200; }
+			#selectabler { list-style-type: none; margin: 0; padding: 0; width: 100%; }
+			#selectabler li { margin: 3px; padding: 0.5em; font-size: 0.9em; height: 12px; }
+			
+			.left {text-align: left; white-space: nowrap;}
+			.right {text-align: right; white-space: nowrap;}
+
+			.centered{
+			margin-left: auto;
+			margin-right: auto;
+			font-size: 0.7em;
+			font-family: sans-serif;
+			font-weight: normal;
+			width: 860px;
+			display: block;
+			overflow: auto;
+			text-align: center;
+			}
+			
+			label {
+				display: inline-block;
+				width: 5em;
+			}
+			.ui-tooltip {
+				padding: 10px 20px;
+				color: black;
+				border-radius: 0px;
+			}
+		</style>
+				
+	</head>
+	
+	
+	
+	<body>
+		<div id="content">
+			<div id="header">
+				<!--HEADER START-->
+					<h1>altusi</h1>
+					<div style="padding-bottom: 0.714em; line-height: 0.786em; /*11px/14px*/">Arabic-Latin Translations Unified Study Interface<br/>
+						<span style="font-size:0.786em; /*11px/14px*/ line-height:1em;">Dag N. Hasse / Andreas Büttner, University of Würzburg</span>
+					</div>
+			</div>
+			
+			<div id="linkbar">
+				<ul>
+					<li>
+						<a href="{{ url_for('txtedit') }}">Textedit</a>
+					</li>
+					<li>
+						<a href="{{ url_for('pydelta') }}">pyDelta</a>
+					</li>
+					<li>
+						<a href="{{ url_for('boxplot') }}">boxplot</a>
+					</li>
+					<li>
+						<a href="{{ url_for('textsearch') }}">Textsearch</a>
+					</li>
+					<!--
+					<li>
+						<a href="{{ url_for('compare') }}">Compare</a>
+					</li>
+					--> 
+					<li>
+						<a href="{{ url_for('synopsis') }}">Synopsis</a>
+					</li>
+					<li>
+						<a href="{{ url_for('sources') }}">Sources</a>
+					</li>
+					<li>
+						<a href="{{ url_for('authors') }}">Authors</a>
+					</li>
+					<li>
+						<a href="{{ url_for('shutdown') }}">Shutdown</a>
+					</li>
+				</ul>
+				<!--HEADER END-->
+			</div>
+			
+			
+			
+			<div id="center">
+				<!--CONTENT START-->
+					{% block content %}{% endblock %}
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+
+
+		
+				<!--CONTENT END-->
+			</div>
+			
+			<div id="footer">
+				<!--FOOTER START-->
+				{{ date }}				
+				<!--FOOTER END-->
+			</div>
+		</div>
+		<!--BROWSING START-->
+		
+		{% block browsing %}{% endblock %}
+
+		<!--BROWSING END-->
+	</body>
+	
+</html>

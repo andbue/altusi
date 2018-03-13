@@ -1,0 +1,113 @@
+{% extends "basis.html" %}
+{% block content %}
+		<script>
+			$(function() {
+				$("#selectable").bind("mousedown", function(e) {
+					e.metaKey = true;
+				}).selectable();
+				$( "#selectable" ).selectable({
+					stop: function() {
+						$("#svgimage").text("Computing...");
+						var result = $( "#select-result" ).empty();							
+						data = {}
+						$( ".ui-selected", this ).each(function() {
+							var index = $( "#selectable li" ).index( this );
+							data[index] = true;
+							});
+						data = JSON.stringify(data);
+											
+						$.ajax({
+							url: $SCRIPT_ROOT + '/_select_texts',
+							type: 'POST',
+							contentType: 'application/json;charset=UTF-8',
+							data: data,
+							success: function( data ) {
+								$("#svgimage").html(data.svgimage);
+							}
+							});
+							
+						}
+					});
+				});
+				
+				 $(function() {
+						$( document ).tooltip();
+						});
+						
+
+		</script>
+
+				<h2>R(Stylo)</h2>
+				
+				<span id="svgimage"> </span>
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+{% endblock %}
+
+{% block browsing %}
+			<form action="study" method="POST" accept-charset="UTF-8">
+
+
+				<div id="searchmask">
+
+					<!--SEARCHMASK START-->
+					<div>
+						<input name="search" id="searchfield" type="text" size="25" />
+						<input type="submit" value="Search"/>
+						<input type="hidden" name="nav" value="b"/>
+					</div>
+					<div>
+						<ul class="typepad">
+							<li><a href="javascript:addglyph('ḏ');">ḏ</a></li>
+							<li><a href="javascript:addglyph('ǧ');">ǧ</a></li>
+							<li><a href="javascript:addglyph('ḫ');">ḫ</a></li>
+							<li><a href="javascript:addglyph('š');">š</a></li>
+							<li><a href="javascript:addglyph('ṯ');">ṯ</a></li>
+							<li/>
+							<li><a href="javascript:addglyph('ā');">ā</a></li>
+							<li><a href="javascript:addglyph('ī');">ī</a></li>
+							<li><a href="javascript:addglyph('ū');">ū</a></li>
+						</ul>
+						<ul class="typepad">
+							<li><a href="javascript:addglyph('ḍ');">ḍ</a></li>
+							<li><a href="javascript:addglyph('ġ');">ġ</a></li>
+							<li><a href="javascript:addglyph('ḥ');">ḥ</a></li>
+							<li><a href="javascript:addglyph('ṣ');">ṣ</a></li>
+							<li><a href="javascript:addglyph('ṭ');">ṭ</a></li>
+							<li><a href="javascript:addglyph('ẓ');">ẓ</a></li>
+							<li/>
+							<li><a href="javascript:addglyph('ʾ');">ʾ</a></li>
+							<li><a href="javascript:addglyph('ʿ');">ʿ</a></li>
+						</ul>
+					</div>
+					<div>
+						<b>Search in:</b><br/>
+						<input type="checkbox" name="s[]" value="l" checked="checked"/>Latin Lemma<br/>
+						<input type="checkbox" name="s[]" value="a" checked="checked"/>Arabic expression<br/>
+						<input type="checkbox" name="s[]" value="e" />English translation<br/>
+						<input type="checkbox" name="s[]" value="q" />quotes
+						<input type="checkbox" name="s[]" value="r"  style="margin-left:1em;"/>root
+					</div>
+						<a href="?nav=srch" style="position:absolute; bottom:0; right: 0.357em;">input Arabic Alphabet »</a>
+				<!--SEARCHMASK END-->
+				</div>
+
+
+				<div id="lemlist" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ol id="selectable">
+					{% for entry in content %}
+						<li class="ui-widget-content" title="Tooltiptest"> {{ entry }} </li>
+					{% endfor %}
+				</ol>
+				
+   					<!--TEXTLIST END-->
+				</div>
+				
+				
+			</form>
+{% endblock %}

@@ -1,0 +1,31 @@
+﻿/* ARABIC AND LATIN GLOSSARY WEBSITE STYLESHEET */
+
+/* COLORS */
+body {
+	background-color: #fafcff;
+}
+body, #linkbar a {
+	color: #15305f;
+}
+#header, #linkbar, #footer {
+	background-color:#b4c0d4; /*c4cad4*/
+}
+h2, p.bsp:before, p.koa:before, p.kol:before {
+	color: #607090;
+}
+a, #alphlist a, #lemlist a,, #lemlistr a, #linkbar a:hover {
+	color: #854200;
+}
+#searchmask, #lemlist div, #lemlistr div {
+	background-color: #e5d9cf;
+}
+ul.typepad a, #alphlist li, #lemlist li, #lemlistr li {
+	background-color: #ccb4a3;
+}
+ul.typepad a:hover, #alphlist li:hover, #lemlist li:hover, span.emph, #lemlistr li:hover, {
+	background-color: #deb292;
+}
+select option{
+	background-color: #ccb4a3;
+}
+

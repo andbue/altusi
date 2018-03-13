@@ -1,0 +1,145 @@
+{% extends "basis.html" %}
+{% block content %}
+		<script>
+            
+                        
+                $(function() {
+		    BOOKMARKS();
+                    $("#selectable").bind("mousedown", function(e) {
+                        e.metaKey = true;
+                    }).selectable;
+                    $("#selectable").selectable({
+                        stop: GET_SVG
+                        });
+                    $("#delta").change(GET_SVG);
+                    $("#mfwmin").change(GET_SVG);
+                    //$("#mfwmax").change(GET_SVG);
+                    //$("#mfwinc").change(GET_SVG);
+                    $("#culmin").change(GET_SVG);
+                    //$("#culmax").change(GET_SVG);
+                    //$("#culinc").change(GET_SVG);
+                    //$("#ngram").change(GET_SVG);
+                    //$("#cons").change(GET_SVG);
+		    $( document ).tooltip();
+                    });
+                    
+
+
+		function GET_SVG() {
+			//$("#svgimage").text("Computing...");
+			$("#image").attr( "alt",  "Computing...");
+			$("#image").attr( "src", "");
+			data = {};
+                        data.indices = {};
+			$( ".ui-selected", "#selectable" ).each(function() {
+				var index = $( "#selectable li" ).index( this );
+				data.indices[index] = true;
+				});
+                        data.settings = {};
+                        data.settings["mfwmin"] = $('input[id="mfwmin"]').val();
+                        //data.settings["mfwmax"] = $('input[id="mfwmax"]').val();
+                        //data.settings["mfwinc"] = $('input[id="mfwinc"]').val();
+                        data.settings["culmin"] = $('input[id="culmin"]').val();
+                        //data.settings["culmax"] = $('input[id="culmax"]').val();
+                        //data.settings["culinc"] = $('input[id="culinc"]').val();
+                        //data.settings["ngram"] = $('input[id="ngram"]').val();
+                        //data.settings["cons"] = $('input[id="cons"]').val();
+                        data.settings["delta"] = $('select[id="delta"]').val();
+			data = JSON.stringify(data);
+			$.ajax({
+				url: $SCRIPT_ROOT + '/_select_pydelta',
+				type: 'POST',
+				contentType: 'application/json;charset=UTF-8',
+				data: data,
+				success: function( data ) {
+					var img = document.getElementById('image');
+					img.alt = data.svgimage;
+					var svg = "data:image/svg+xml," + encodeURIComponent(data.svgimage);  
+					img.src = svg;
+
+				}
+				});
+				
+			}		
+
+		</script>
+
+
+
+				<h2>pydelta</h2>
+				
+						<div>
+	    Download the last plot as
+		<a href="{{ url_for('imgdownload') }}?imgtype=png">PNG</a>
+		/
+		<a href="{{ url_for('imgdownload') }}?imgtype=svg">SVG</a>
+		.
+		</div>		
+				<img id="image"/>
+
+				
+				{% for message in get_flashed_messages() %}
+					<p>{{ message }}</p>
+				{% endfor %}
+{% endblock %}
+
+
+{% block browsing %}
+			<div id="searchmask">
+			    <div id="bookmarks">
+				<select type="hidden" id="bookm">
+				    <option value="1">keine</option>
+				    <option value="2">dazwischen</option>
+				    <option value="3">alle</option>
+				</select>
+				<input name="bookname" id="bookname" type="hidden" size="10" />
+				<input type="hidden" id="addbtn" value="+"/>
+			    </div>
+                        MFW:
+                        <input id="mfwmin" type="text" size="4" value="250"/>
+<!--
+                        -
+
+                        <input id="mfwmax" type="text" size="4" value="1000"/>
+                        :
+                        <input id="mfwinc" type="text" size="3" value="50"/>
+-->
+                        <br/>
+                        CUL:
+                        <input id="culmin" type="text" size="4" value="10"/>
+<!--
+                        -
+                        <input id="culmax" type="text" size="4" value="100"/>
+                        :
+                        <input id="culinc" type="text" size="3" value="20"/>
+                        <br/>
+                        nGram:
+                        <input id="ngram" type="text" size="3" value="1"/>
+                        Cons:
+                        <input id="cons" type="text" size="3" value="0.6"/>
+-->
+                        <br/>
+                        Delta:
+                        <select id="delta">
+			{% for entry in deltas %}
+				<option value=" {{ entry }} ">{{ entry }}</option>
+			{% endfor %}
+                        </select>
+
+				<!--SEARCHMASK END-->
+		    </div>
+
+
+				<div id="lemlist" class="styled-select">
+
+					<!--TEXTLIST START-->
+				<ol id="selectable">
+					{% for entry in content %}
+						<li class="ui-widget-content" title="{{ entry[1] }}"> {{ entry[0] }} </li>
+					{% endfor %}
+				</ol>
+				
+   					<!--TEXTLIST END-->
+				</div>
+				
+{% endblock %}
